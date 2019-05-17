@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.you.springmybatis.mapper.UserMapper">
+    <select id="findById" parameterType="int" resultType="User">
+        SELECT * FROM t_user WHERE id=#{name}
+    </select>
+
+    <insert id="addUser" parameterType="User">
+        insert into t_user (username,password) values (#{username},#{password})
+    </insert>
+
+    <delete id="deleteUser" parameterType="User">
+        delete from t_user where id = #{id}
+    </delete>
+
+    <update id="updataUser" parameterType="User">
+        update t_user set username=#{username} where id=#{id}
+    </update>
+
+    <!--多条件查询 需要把多个参数放进map里-->
+    <select id="mapSelect" parameterType="map" resultType="User">
+        select * from t_user where id > #{id} and username like concat('%',#{name},'%')
+    </select>
+
+    <!--动态语句-->
+    <select id="selectBy" parameterType="User" resultType="User">
+        select * from t_user
+        <where>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password !=''">
+                and password = #{password}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectForeach" parameterType="List" resultType="User">
+        select * from t_user where id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--通过接口映射查询所有-->
+    <select id="findAll" resultType="User" parameterType="UserVo">
+        select * from t_user
+    </select>
+
+    <!--通过接口映射 根据 username 删除列-->
+    <delete id="deleteByName" parameterType="UserVo">
+        delete from t_user where id=#{id}
+    </delete>
+
+    <!--一对多，或多对多（单向一对多）的映射-->
+    <select id="findRoleByUser" resultMap="UserBean">
+        SELECT * FROM userinfo u INNER JOIN user_role ur ON u.`USERID`=ur.`USERID` INNER JOIN roleinfo r ON r.`ROLEID`=ur.`ROLEID` AND u.`USERID`=1
+    </select>
+    <resultMap id="UserBean" type="UserInfo">
+        <id column="uid" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <collection property="roleInfos" ofType="RoleInfo">
+            <id column="rid" property="id"/>
+            <result column="roleName" property="roleName"/>
+            <!--<result column="shortName" property="showName"/>-->
+        </collection>
+    </resultMap>
+
+    <!--多对多（单向一对多）映射 间接一对多-->
+    <select id="findMenuByUser" resultMap="UserInfoBean">
+        SELECT * FROM userinfo u INNER JOIN user_role ur ON u.`USERID`=ur.`USERID` INNER JOIN roleinfo r ON r.`ROLEID`=ur.`ROLEID`
+        INNER JOIN rolemenu rm ON r.`ROLEID`=rm.`ROLEID` INNER JOIN menuinfo m ON m.`MENUID`=rm.`MENUID` AND u.`USERID`=1
+    </select>
+    <resultMap id="UserInfoBean" type="UserInfo">
+        <id column="USERID" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <collection property="roleInfos" ofType="RoleInfo">
+            <id column="roleid" property="id"/>
+            <result column="roleName" property="roleName"/>
+            <result column="shortName" property="showName"/>
+            <collection property="menuInfoList" ofType="MenuInfo">
+                <id column="MENUID" property="menuId"/>
+                <result column="menuName" property="menuName"/>
+            </collection>
+        </collection>
+    </resultMap>
+</mapper>
