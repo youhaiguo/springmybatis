@@ -19,7 +19,7 @@ public class UserInfoController {
                                                    // 通过适当的HttpMessageConverter转换为指定格式后，
                                                    // 写入到Response对象的body数据区
         System.out.println("hello word");
-        System.out.println("test");
+
         System.out.println(name);
         return name;
     }
