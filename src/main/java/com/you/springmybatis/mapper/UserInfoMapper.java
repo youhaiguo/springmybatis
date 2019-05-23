@@ -1,15 +1,13 @@
-package com.you.springmybatis.service;
+package com.you.springmybatis.mapper;
 
 import com.you.springmybatis.dto.RoleDto;
 import com.you.springmybatis.entity.UserInfo;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
-public interface UserService {
 
-    void addUser();
+public interface UserInfoMapper {
 
 
     UserInfo findUser(UserInfo userInfo);

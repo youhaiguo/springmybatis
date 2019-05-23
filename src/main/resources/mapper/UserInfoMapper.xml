@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.you.springmybatis.mapper.UserInfoMapper">
+
+    <select id="findUser" parameterType="com.you.springmybatis.entity.UserInfo" resultType="UserInfo" >
+        select * from userinfo where username=#{username} and password=#{password}
+    </select>
+
+    <select id="findAllUser" resultType="UserInfo">
+        select * from userinfo
+    </select>
+
+    <select id="findUserById" parameterType="Integer" resultType="UserInfo">
+        select * from userinfo where userid=#{userid}
+    </select>
+
+    <update id="upDataUserById" parameterType="UserInfo">
+        update userinfo
+        <set>
+          <if test="username != null">
+              username=#{username},
+          </if>
+            <if test="regEmail != null">
+                regEmail=#{regEmail}
+            </if>
+        </set>
+        where userid=#{userid}
+    </update>
+
+    <select id="findRoleById" parameterType="Integer" resultType="RoleDto">
+        SELECT !ISNULL(ur.`ROLEID`) ISNULL, r.* FROM userinfo u
+        RIGHT JOIN user_role ur ON u.`USERID`=ur.`USERID`
+        RIGHT JOIN roleinfo r ON r.`ROLEID`=ur.`ROLEID` AND u.`USERID`=#{userid}
+    </select>
+</mapper>

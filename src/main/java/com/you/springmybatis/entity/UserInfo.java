@@ -3,17 +3,21 @@ package com.you.springmybatis.entity;
 import java.util.List;
 
 public class UserInfo {
-    private int id;
+    private int userid;
     private String username;
     private String password;
+
+    private String regEmail;
+    private String mobile;
+
     private List<RoleInfo> roleInfos;
 
-    public int getId() {
-        return id;
+    public int getUserid() {
+        return userid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
     public String getUsername() {
@@ -32,6 +36,22 @@ public class UserInfo {
         this.password = password;
     }
 
+    public String getRegEmail() {
+        return regEmail;
+    }
+
+    public void setRegEmall(String regEmail) {
+        this.regEmail = regEmail;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
     public List<RoleInfo> getRoleInfos() {
         return roleInfos;
     }
@@ -43,9 +63,11 @@ public class UserInfo {
     @Override
     public String toString() {
         return "UserInfo{" +
-                "id=" + id +
+                "id=" + userid +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", regEmall='" + regEmail + '\'' +
+                ", mobile='" + mobile + '\'' +
                 ", roleInfos=" + roleInfos +
                 '}';
     }

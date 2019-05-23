@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.you.springmybatis.mapper.MenuInfoMapper">
+
+    <!--用户角色菜单查询菜单-->
+    <select id="findMenuInfo" parameterType="int" resultMap="MenuInfoDto">
+--         SELECT m1.*,m2.`MENUID` menuid2,m2.`MENUNAME` menuname2,m2.`PARENTID` PARENTID2,m3.`MENUID` menuid3,m3.`MENUNAME` menuname3,m3.`PARENTID` PARENTID3 FROM menuinfo m1
+--         INNER JOIN menuinfo m2 ON m1.`MENUID`=m2.`PARENTID`
+--         LEFT JOIN menuinfo m3 ON m3.parentid=m2.menuid WHERE m1.menuid=1
+
+--       SELECT tab1.*,!ISNULL(tab2.menuid) checked FROM (SELECT m1.*,m2.`MENUID` menuid2,m2.`MENUNAME` menuname2,m2.`PARENTID` PARENTID2,m3.`MENUID` menuid3,m3.`MENUNAME` menuname3,m3.`PARENTID` PARENTID3 FROM menuinfo m1
+--       INNER JOIN menuinfo m2 ON m1.`MENUID`=m2.`PARENTID`
+--       LEFT JOIN menuinfo m3 ON m3.parentid=m2.menuid WHERE m1.menuid=1) tab1
+--       LEFT JOIN (SELECT m.* FROM roleinfo r INNER JOIN rolemenu rm ON r.`ROLEID`=rm.`ROLEID`
+--       INNER JOIN menuinfo m ON m.`MENUID`=rm.`MENUID` WHERE r.`ROLEID`=1) tab2
+--       ON tab1.menuid2=tab2.menuid OR tab1.menuid3=tab2.menuid
+
+        SELECT taball.*,tab.menuid checked2 FROM
+        (SELECT tab1.*,!ISNULL(tab2.menuid) checked FROM (SELECT m1.*,m2.`MENUID` menuid2,m2.`MENUNAME` menuname2,m2.`PARENTID` PARENTID2,m3.`MENUID` menuid3,m3.`MENUNAME` menuname3,m3.`PARENTID` PARENTID3 FROM menuinfo m1
+        INNER JOIN menuinfo m2 ON m1.`MENUID`=m2.`PARENTID`
+        LEFT JOIN menuinfo m3 ON m3.parentid=m2.menuid WHERE m1.menuid=1) tab1
+        LEFT JOIN (SELECT m.* FROM roleinfo r INNER JOIN rolemenu rm ON r.`ROLEID`=rm.`ROLEID`
+        INNER JOIN menuinfo m ON m.`MENUID`=rm.`MENUID` WHERE r.`ROLEID`=#{roleid}) tab2
+        ON tab1.menuid2=tab2.menuid OR tab1.menuid3=tab2.menuid) taball
+        LEFT JOIN (SELECT m.* FROM roleinfo r INNER JOIN rolemenu rm ON r.`ROLEID`=rm.`ROLEID`
+        INNER JOIN menuinfo m ON m.`MENUID`=rm.`MENUID` WHERE r.`ROLEID`=#{roleid}) tab
+        ON taball.menuid3=tab.menuid
+    </select>
+    <resultMap id="MenuInfoDto" type="MenuInfoDto">
+        <id property="id" column="menuid"/>
+        <result property="pid" column="parentid"/>
+        <result property="name" column="menuname"/>
+        <result property="checked" column="checked"/>
+        <collection property="children" ofType="MenuInfoDto">
+            <id property="id" column="menuid2"/>
+            <result property="pid" column="parentid2"/>
+            <result property="name" column="menuname2"/>
+            <result property="checked" column="checked"/>
+            <collection property="children" ofType="MenuInfoDto">
+                <id property="id" column="menuid3"/>
+                <result property="pid" column="parentid3"/>
+                <result property="name" column="menuname3"/>
+                <result property="checked" column="checked2"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findRoles" parameterType="Integer" resultType="RoleDto">
+        select * from userinfo u inner join user_role ur on u.userid=ur.userid
+        inner join roleinfo r on r.roleid=ur.roleid where u.userid=#{userid}
+    </select>
+</mapper>
